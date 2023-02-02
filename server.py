@@ -36,7 +36,7 @@ class MyWebServer(socketserver.BaseRequestHandler):
 
         #get data and seperate it
         dataSplit= self.data.split()
-        print("\n",dataSplit)
+        #print("\n",dataSplit)
         dataRequest= dataSplit[0].split(" ")
         #print(dataRequest)
         typeDataRqst= dataRequest[0]
@@ -49,21 +49,21 @@ class MyWebServer(socketserver.BaseRequestHandler):
         #request type checking
         if typeDataRqst=="GET":
             if path[:4] == "/../":
-                textResponse= "HTTP/1.1 404 Not Found!\r\n"
+                ouputText= "HTTP/1.1 404 Not Found!\r\n"
             elif path[-4:]==".css":
-                textResponse = self.getCss(path)
+                ouputText = self.getCss(path)
             elif path[-5:]==".html":
-                textResponse= self.getHTML(path)
+                ouputText= self.getHTML(path)
             elif path[-1:] == "/":
-                textResponse= self.getIndex(path)
+                ouputText= self.getIndex(path)
             else:
-                textResponse = self.Redirect(path)
+                ouputText = self.Redirect(path)
         else:
             #invalid 405 Error for anything other than a GET request
-            textResponse= "HTTP/1.1 405 Method Not Allowed!\r\n" 
+            ouputText= "HTTP/1.1 405 Method Not Allowed!\r\n" 
 
-        #send the response from the returned textResponse
-        self.request.sendall(bytearray(textResponse, 'utf-8'))
+        #send the response from the returned ouputText
+        self.request.sendall(bytearray(ouputText, 'utf-8'))
         return 
 
 
@@ -73,15 +73,15 @@ class MyWebServer(socketserver.BaseRequestHandler):
             fileContent= file.read()
     #fileContent.close()
         except:
-             textResponse = "HTTP/1.1 404 Not Found!\r\n"    
+             ouputText = "HTTP/1.1 404 Not Found!\r\n"    
         
         if path[-8:]=="deep.css":
-            textResponse= "HTTP/1.1 404 Not Found\r\n"
+            ouputText= "HTTP/1.1 404 Not Found\r\n"
         elif path[-9:]=="/base.css":
-            textResponse= "HTTP/1.1 200 OK Not FOUND!\r\nContent-Type: text/css\r\n\r\n{}".format(fileContent)
+            ouputText= "HTTP/1.1 200 OK Not FOUND!\r\nContent-Type: text/css\r\n\r\n{}".format(fileContent)
         else:
-            textResponse = "HTTP/1.1 404 Not Found!\r\n"
-        return(textResponse)
+            ouputText = "HTTP/1.1 404 Not Found!\r\n"
+        return(ouputText)
 
     def getHTML(self,path):
         try:
@@ -89,13 +89,13 @@ class MyWebServer(socketserver.BaseRequestHandler):
             fileContent= file.read()
         #fileContent.close()
         except:
-            textResponse = "HTTP/1.1 404 Not Found!\r\n"
+            ouputText = "HTTP/1.1 404 Not Found!\r\n"
     
         if path[-11:]== "/index.html":
-            textResponse=  "HTTP/1.1 200 OK Not FOUND!\r\nContent-Type: text/html\r\n\r\n{}".format(fileContent)
+            ouputText=  "HTTP/1.1 200 OK Not FOUND!\r\nContent-Type: text/html\r\n\r\n{}".format(fileContent)
         else:
-            textResponse = "HTTP/1.1 404 Not Found!\r\n"
-        return(textResponse)
+            ouputText = "HTTP/1.1 404 Not Found!\r\n"
+        return(ouputText)
 
     def getIndex(self,path):
 
@@ -108,14 +108,14 @@ class MyWebServer(socketserver.BaseRequestHandler):
                 path += "index.html"
                 file= open("./www"+path)
                 fileContent= file.read()
-                textResponse= "HTTP/1.1 200 OK Not FOUND!\r\nContent-Type: text/html\r\n\r\n{}".format(fileContent)
+                ouputText= "HTTP/1.1 200 OK Not FOUND!\r\nContent-Type: text/html\r\n\r\n{}".format(fileContent)
             else:
-                textResponse = "HTTP/1.1 404 Not Found!\r\n"
+                ouputText = "HTTP/1.1 404 Not Found!\r\n"
 
         except:
-            textResponse = "HTTP/1.1 404 Not Found!\r\n"
+            ouputText = "HTTP/1.1 404 Not Found!\r\n"
             
-        return(textResponse)
+        return(ouputText)
         
     def Redirect(self,path):
         try:
@@ -123,22 +123,22 @@ class MyWebServer(socketserver.BaseRequestHandler):
             fileContent= file.read()
         #fileContent.close()
         except:
-            textResponse = "HTTP/1.1 404 Not Found!\r\n"
+            ouputText = "HTTP/1.1 404 Not Found!\r\n"
 
         if path[-5:]== "/deep":
             #print("hey1\n")
             path+="/"
-            textResponse= "HTTP/1.1 301 Moved Permanently\r\nLocation: {}\r\n".format(path)
+            ouputText= "HTTP/1.1 301 Moved Permanently\r\nLocation: {}\r\n".format(path)
         elif path == "/":
             #print("hey2\n")
             path += "index.html"
             file= open("./www"+path)
             fileContent= file.read()
-            textResponse= "HTTP/1.1 301 Moved Permanently\r\nLocation: {}\r\n".format(fileContent)
-            print("\ test it worked\n")
+            ouputText= "HTTP/1.1 301 Moved Permanently\r\nLocation: {}\r\n".format(fileContent)
+            #print("\ test it worked\n")
         else:
-            textResponse="HTTP/1.1 404 Not Found!\r\n"
-        return textResponse
+            ouputText="HTTP/1.1 404 Not Found!\r\n"
+        return ouputText
 
 if __name__ == "__main__":
     HOST, PORT = "localhost", 8080

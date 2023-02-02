@@ -103,17 +103,18 @@ class MyWebServer(socketserver.BaseRequestHandler):
             file= open("./www"+path)
             fileContent= file.read()
             #fileContent.close()
+
+            if path[-1:] == "/":
+                path += "index.html"
+                file= open("./www"+path)
+                fileContent= file.read()
+                textResponse= "HTTP/1.1 200 OK Not FOUND!\r\nContent-Type: text/html\r\n\r\n{}".format(fileContent)
+            else:
+                textResponse = "HTTP/1.1 404 Not Found!\r\n"
+
         except:
             textResponse = "HTTP/1.1 404 Not Found!\r\n"
-
-        if path[-1:] == "/":
-            path += "index.html"
-            file= open("./www"+path)
-            fileContent= file.read()
-            textResponse= "HTTP/1.1 200 OK Not FOUND!\r\nContent-Type: text/html\r\n\r\n{}".format(fileContent)
-        else:
-            textResponse = "HTTP/1.1 404 Not Found!\r\n"
-
+            
         return(textResponse)
         
     def Redirect(self,path):
@@ -123,7 +124,7 @@ class MyWebServer(socketserver.BaseRequestHandler):
         #fileContent.close()
         except:
             textResponse = "HTTP/1.1 404 Not Found!\r\n"
-            
+
         if path[-5:]== "/deep":
             #print("hey1\n")
             path+="/"

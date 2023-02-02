@@ -52,8 +52,8 @@ class MyWebServer(socketserver.BaseRequestHandler):
                 textResponse= "HTTP/1.1 404 Not Found!\r\n"
             elif path[-4:]==".css":
                 textResponse = self.getCss(path)
-            elif path[-4:]==".html":
-                textResponse= self.getHtml(path)
+            elif path[-5:]==".html":
+                textResponse= self.getHTML(path)
             elif path[-1:] == "/":
                 textResponse= self.getIndex(path)
             else:
@@ -68,10 +68,12 @@ class MyWebServer(socketserver.BaseRequestHandler):
 
 
     def getCss(self,path):
-
-        file= open("./www"+path)
-        fileContent= file.read()
-        #fileContent.close()
+        try:
+            file= open("./www"+path)
+            fileContent= file.read()
+    #fileContent.close()
+        except:
+             textResponse = "HTTP/1.1 404 Not Found!\r\n"    
         
         if path[-8:]=="deep.css":
             textResponse= "HTTP/1.1 404 Not Found\r\n"
@@ -82,10 +84,12 @@ class MyWebServer(socketserver.BaseRequestHandler):
         return(textResponse)
 
     def getHTML(self,path):
-        file= open("./www"+path)
-        print("file=",file)
-        fileContent= file.read()
+        try:
+            file= open("./www"+path)
+            fileContent= file.read()
         #fileContent.close()
+        except:
+            textResponse = "HTTP/1.1 404 Not Found!\r\n"
     
         if path[-11:]== "/index.html":
             textResponse=  "HTTP/1.1 200 OK Not FOUND!\r\nContent-Type: text/html\r\n\r\n{}".format(fileContent)
@@ -94,6 +98,13 @@ class MyWebServer(socketserver.BaseRequestHandler):
         return(textResponse)
 
     def getIndex(self,path):
+
+        try:
+            file= open("./www"+path)
+            fileContent= file.read()
+            #fileContent.close()
+        except:
+            textResponse = "HTTP/1.1 404 Not Found!\r\n"
 
         if path[-1:] == "/":
             path += "index.html"
@@ -106,6 +117,13 @@ class MyWebServer(socketserver.BaseRequestHandler):
         return(textResponse)
         
     def Redirect(self,path):
+        try:
+            file= open("./www"+path)
+            fileContent= file.read()
+        #fileContent.close()
+        except:
+            textResponse = "HTTP/1.1 404 Not Found!\r\n"
+            
         if path[-5:]== "/deep":
             #print("hey1\n")
             path+="/"
